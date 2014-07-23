@@ -1,0 +1,96 @@
+
+
+
+3.1 块和替换
+
+Tornado通过extends和block语句支持模板继承，这就让你拥有了编写能够在合适的地方复用的流体模板的控制权和灵活性。
+
+继承一个页面
+
+{% extends "main.html" %}
+
+------------
+
+变更某些东西
+
+一个块语句压缩了一些当你扩展时可能想要改变的模板元素。比如，为了使用一个能够根据不同页覆写的动态header块，你可以在父模板main.html中添加如下代码：
+
+<header>
+    {% block header %}{% end %}
+</header>
+
+然后，为了在子模板index.html中覆写{% block header %}{% end %}部分，你可以使用块的名字引用，并把任何你想要的内容放到其中。
+
+{% block header %}
+    <h1>Hello world!</h1>
+{% end %}
+
+------------
+
+一个继承的例子
+
+下面是一个在父模板main.html中使用多个块的例子：
+
+    <html>
+    <body>
+        <header>
+            {% block header %}{% end %}
+        </header>
+        <content>
+            {% block body %}{% end %}
+        </content>
+        <footer>
+            {% block footer %}{% end %}
+        </footer>
+    </body>
+    </html>
+当我们扩展父模板main.html时，可以在子模板index.html中引用这些块。
+
+    {% extends "main.html" %}
+
+    {% block header %}
+        <h1>{{ header_text }}</h1>
+    {% end %}
+
+    {% block body %}
+        <p>Hello from the child template!</p>
+    {% end %}
+
+    {% block footer %}
+        <p>{{ footer_text }}</p>
+    {% end %}
+用来加载模板的Python脚本和上一个例子差不多，不过在这里我们传递了几个字符串变量给模板使用（如图3-2）：
+
+    class MainHandler(tornado.web.RequestHandler):
+        def get(self):
+            self.render(
+                "index.html",
+                header_text = "Header goes here",
+                footer_text = "Footer goes here"
+            )
+
+
+===============================
+
+默认自动转义
+
+举个例子，如果Burt想在footer中使用模板变量设置email联系链接，他将不会得到期望的HTML链接。考虑下面的模板片段：
+
+{% set mailLink = "<a href="mailto:contact@burtsbooks.com">Contact Us</a>" %}
+{{ mailLink }}'
+它会在页面源代码中渲染成如下代码：
+
+&lt;a href=&quot;mailto:contact@burtsbooks.com&quot;&gt;Contact Us&lt;/a&gt;
+
+
+可以关闭
+
+为了处理这种情况，你可以禁用自动转义，一种方法是在Application构造函数中传递autoescape=None，另一种方法是在每页的基础上修改自动转义行为，如下所示：
+
+{% autoescape None %}
+{{ mailLink }}
+
+在理想的情况下，你希望保持自动转义开启以便继续防护你的网站。因此，你可以使用{% raw %}指令来输出不转义的内容。
+
+{% raw mailLink %}
+

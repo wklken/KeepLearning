@@ -1,0 +1,11 @@
+
+Tornado包含一个AsyncHTTPClient类，可以执行异步HTTP请求
+
+
+我们使用优秀的Siege utility工具进行测试。它可以这样使用：
+
+$ siege http://localhost:8000/?q=pants -c10 -t10s
+
+
+
+

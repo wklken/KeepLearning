@@ -1,0 +1,87 @@
+
+
+
+>>> from tornado.template import Template
+>>> content = Template("<html><body><h1>{{ header }}</h1></body></html>")
+>>> print content.generate(header="Welcome!")
+<html><body><h1>Welcome!</h1></body></html>
+
+可以将任何Python表达式放在双大括号中
+
+>>> from tornado.template import Template
+>>> print Template("{{ 1+1 }}").generate()
+2
+>>> print Template("{{ 'scrambled eggs'[-4:] }}").generate()
+eggs
+>>> print Template("{{ ', '.join([str(x*x) for x in range(10)]) }}").generate()
+0, 1, 4, 9, 16, 25, 36, 49, 64, 81
+
+
+控制流
+
+{% if page is None %}
+或
+
+{% if len(entries) == 3 %}
+
+
+<html>
+    <head>
+        <title>{{ title }}</title>
+    </head>
+    <body>
+        <h1>{{ header }}</h1>
+        <ul>
+            {% for book in books %}
+                <li>{{ book }}</li>
+            {% end %}
+        </ul>
+    </body>
+</html>
+
+-----------------------
+
+
+class BookHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render(
+            "book.html",
+            title="Home Page",
+            header="Books that are great",
+            books=[
+                "Learning Python",
+                "Programming Collective Intelligence",
+                "Restful Web Services"
+            ]
+        )
+
+你也可以在你的控制语句块中间使用{% set foo = 'bar' %}来设置变量
+
+------------------------
+
+在模板中使用函数¶
+
+escape(s)
+替换字符串s中的&、<、>为他们对应的HTML字符。
+
+url_escape(s)
+使用urllib.quote_plus替换字符串s中的字符为URL编码形式。
+
+json_encode(val)
+将val编码成JSON格式。（在系统底层，这是一个对json库的dumps函数的调用。查阅相关的文档以获得更多关于该函数接收和返回参数的信息。）
+
+squeeze(s)
+过滤字符串s，把连续的多个空白字符替换成一个空格。
+
+在模板中使用自定义函数
+
+>>> from tornado.template import Template
+>>> def disemvowel(s):
+...     return ''.join([x for x in s if x not in 'aeiou'])
+...
+>>> disemvowel("george")
+'grg'
+>>> print Template("my name is {{d('mortimer')}}").generate(d=disemvowel)
+my name is mrtmr
+
+

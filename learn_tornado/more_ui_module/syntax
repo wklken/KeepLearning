@@ -1,0 +1,91 @@
+
+很多时候，一个非常有用的做法是让模块指向一个模板文件而不是在模块类中直接渲染字符串
+
+-----------------------
+
+locale.format_date()的使用。它调用了tornado.locale模块提供的日期处理方法，这个模块本身是一组i18n方法的集合。format_date()选项默认格式化GMT Unix时间戳为XX time ago，并且可以向下面这样使用：
+
+{{ locale.format_date(book["date"]) }}
+
+relative=False将使其返回一个绝对时间（包含小时和分钟），而full_format=True选项将会展示一个包含月、日、年和时间的完整日期（比如，July 9, 2011 at 9:47 pm），当搭配shorter=True使用时可以隐藏时间，只显示月、日和年。
+
+这个模块在你处理时间和日期时非常有用，并且还提供了处理本地化字符串的支持。
+
+-----------------------
+
+允许嵌入css/js
+
+class BookModule(tornado.web.UIModule):
+    def render(self, book):
+        return self.render_string(
+            "modules/book.html",
+            book=book,
+        )
+
+    def embedded_javascript(self):
+        return "document.write(\"hi!\")"
+
+得到
+
+<script type="text/javascript">
+//<![CDATA[
+document.write("hi!")
+//]]>
+</script>
+
+
+def embedded_css(self):
+    return ".book {background-color:#F5F5F5}"
+
+得到
+
+<style type="text/css">
+.book {background-color:#F5F5F5}
+</style>
+
+
+或者, 包含整个文件
+
+所以你可以使用javascript_files()和css_files()来包含完整的文件，不论是本地的还是外部的。
+
+比如，你可以添加一个额外的本地CSS文件如下：
+
+def css_files(self):
+    return "/static/css/newreleases.css"
+或者你可以取得一个外部的JavaScript文件：
+
+def javascript_files(self):
+    return "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"
+
+甚至可以简单地使用html_body()来在闭合的</body>标签前添加完整的HTML标记：
+
+def html_body(self):
+    return "<script>document.write("Hello!")</script>"
+
+-------------------------------
+
+完整示例
+
+class SampleModule(tornado.web.UIModule):
+    def render(self, sample):
+        return self.render_string(
+            "modules/sample.html",
+            sample=sample
+        )
+
+    def html_body(self):
+        return "<div class=\"addition\"><p>html_body()</p></div>"
+
+    def embedded_javascript(self):
+        return "document.write(\"<p>embedded_javascript()</p>\")"
+
+    def embedded_css(self):
+        return ".addition {color: #A1CAF1}"
+
+    def css_files(self):
+        return "/static/css/sample.css"
+
+    def javascript_files(self):
+        return "/static/js/sample.js"
+
+

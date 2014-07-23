@@ -1,0 +1,52 @@
+
+
+有很多方式可以在浏览器中截获cookies。JavaScript和Flash对于它们所执行的页面的域有读写cookies的权限。
+
+浏览器插件也可由编程方法访问这些数据。跨站脚本攻击可以利用这些访问来修改访客浏览器中cookies的值
+
+------------------------
+
+Tornado的安全cookies使用加密签名来验证cookies的值没有被服务器软件以外的任何人修改过。
+因为一个恶意脚本并不知道安全密钥，所以它不能在应用不知情时修改cookies
+
+Tornado的set_secure_cookie()和get_secure_cookie()函数发送和取得浏览器的cookies，以防范浏览器中的恶意修改。
+为了使用这些函数，你必须在应用的构造函数中指定cookie_secret参数
+
+如果你检查浏览器中的cookie值，会发现count储存的值类似于MQ==|1310335926|8ef174ecc489ea963c5cdc26ab6d41b49502f2e2。
+Tornado将cookie值编码为Base-64字符串，并添加了一个时间戳和一个cookie内容的HMAC签名。如果cookie的时间戳太旧（或来自未来），或签名和期望值不匹配，
+get_secure_cookie()函数会认为cookie已经被篡改，并返回None，就好像cookie从没设置过一样。
+
+传递给Application构造函数的cookie_secret值应该是唯一的随机字符串。在Python shell下执行下面的代码片段将产生一个你自己的值：
+
+>>> import base64, uuid
+>>> base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes)
+'bZJc2sWbQLKos6GkHn/VB9oXwQt8S0R0kRvJ5/xJ89E='
+
+--------------------------
+
+然而，Tornado的安全cookies仍然容易被窃听。
+攻击者可能会通过脚本或浏览器插件截获cookies，或者干脆窃听未加密的网络数据。
+记住cookie值是签名的而不是加密的。恶意程序能够读取已存储的cookies，并且可以传输他们的数据到任意服务器，或者通过发送没有修改的数据给应用伪造请求。
+因此，避免在浏览器cookie中存储敏感的用户数据是非常重要的。
+
+我们还需要注意用户可能修改他自己的cookies的可能性，这会导致提权攻击。
+比如，如果我们在cookie中存储了用户已付费的文章剩余的浏览数，我们希望防止用户自己更新其中的数值来获取免费的内容。
+httponly和secure属性可以帮助我们防范这种攻击。
+
+--------------------------
+
+Tornado的cookie功能依附于Python内建的Cookie模块。
+因此，我们可以利用它所提供的一些安全功能。
+这些安全属性是HTTP cookie规范的一部分，并在它可能是如何暴露其值给它连接的服务器和它运行的脚本方面给予浏览器指导。
+
+为cookie设置secure属性来指示浏览器只通过SSL连接传递cookie。
+（这可能会产生一些困扰，但这不是Tornado的安全cookies，更精确的说那种方法应该被称为签名cookies。）
+从Python 2.6版本开始，Cookie对象还提供了一个httponly属性。
+包括这个属性指示浏览器对于JavaScript不可访问cookie，这可以防范来自读取cookie值的跨站脚本攻击。
+
+为了开启这些功能，你可以向set_cookie和set_secure_cookie方法传递关键字参数。
+比如，一个安全的HTTP-only cookie（不是Tornado的签名cookie）可以调用self.set_cookie('foo', 'bar', httponly=True, secure=True)发送。
+
+-------------------------
+
+

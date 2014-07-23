@@ -1,0 +1,63 @@
+
+
+很多预防措施可以防止这种类型的攻击。
+首先你在开发应用时需要深谋远虑。
+任何会产生副作用的HTTP请求，比如点击购买按钮、编辑账户设置、改变密码或删除文档，都应该使用HTTP POST方法。
+
+无论如何，这是良好的RESTful做法，但它也有额外的优势用于防范像我们刚才看到的恶意图像那样琐碎的XSRF攻击。
+但是，这并不足够：一个恶意站点可能会通过其他手段，如HTML表单或XMLHTTPRequest API来向你的应用发送POST请求。保护POST请求需要额外的策略。
+
+----------------------------
+
+为了防范伪造POST请求，我们会要求每个请求包括一个参数值作为令牌来匹配存储在cookie中的对应值。
+我们的应用将通过一个cookie头和一个隐藏的HTML表单元素向页面提供令牌。
+当一个合法页面的表单被提交时，它将包括表单值和已存储的cookie。如果两者匹配，我们的应用认定请求有效。
+
+开启XSRF保护：
+
+    settings = {
+        "cookie_secret": "bZJc2sWbQLKos6GkHn/VB9oXwQt8S0R0kRvJ5/xJ89E=",
+        "xsrf_cookies": True
+    }
+    application = tornado.web.Application([
+        (r'/', MainHandler),
+        (r'/purchase', PurchaseHandler),
+    ], **settings)
+
+
+当这个应用标识被设置时，Tornado将拒绝请求参数中不包含正确的_xsrf值的POST、PUT和DELETE请求。
+Tornado将会在幕后处理_xsrf cookies，但你必须在你的HTML表单中包含XSRF令牌以确保授权合法请求。
+要做到这一点，只需要在你的模板中包含一个xsrf_form_html调用即可：
+
+    <form action="/purchase" method="POST">
+        {% raw xsrf_form_html() %}
+        <input type="text" name="title" />
+        <input type="text" name="quantity" />
+        <input type="submit" value="Check Out" />
+    </form>
+
+-----------------------------
+
+AJAX请求也需要一个_xsrf参数，但不是必须显式地在渲染页面时包含一个_xsrf值，而是通过脚本在客户端查询浏览器获得cookie值。下面的两个函数透明地添加令牌值给AJAX POST请求。第一个函数通过名字获取cookie，而第二个函数是一个添加_xsrf参数到传递给postJSON函数数据对象的便捷函数。
+
+    function getCookie(name) {
+        var c = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+        return c ? c[1] : undefined;
+    }
+
+    jQuery.postJSON = function(url, data, callback) {
+        data._xsrf = getCookie("_xsrf");
+        jQuery.ajax({
+            url: url,
+            data: jQuery.param(data),
+            dataType: "json",
+            type: "POST",
+            success: callback
+        });
+    }
+
+这些预防措施需要思考很多，而Tornado的安全cookies支持和XSRF保护减轻了应用开发者的一些负担。
+可以肯定的是，内建的安全功能也非常有用，但在思考你应用的安全性方面需要时刻保持警惕。
+有很多在线Web应用安全文献，其中一个更全面的实践对策集合是Mozilla的安全编程指南。
+
+

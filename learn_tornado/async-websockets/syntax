@@ -1,0 +1,23 @@
+
+
+WebSocket协议提供了在客户端和服务器间持久连接的双向通信。
+
+协议本身使用新的ws://URL格式，但它是在标准HTTP上实现的。
+
+通过使用HTTP和HTTPS端口，它避免了从Web代理后的网络连接站点时引入的各种问题。
+
+只在部分浏览器中支持了
+
+
+Tornado在websocket模块中提供了一个WebSocketHandler类。这个类提供了和已连接的客户端通信的WebSocket事件和方法的钩子。当一个新的WebSocket连接打开时，open方法被调用，而on_message和on_close方法分别在连接接收到新的消息和客户端关闭时被调用。
+
+此外，WebSocketHandler类还提供了write_message方法用于向客户端发送消息，close方法用于关闭连接。
+
+    class EchoHandler(tornado.websocket.WebSocketHandler):
+        def open(self):
+            self.write_message('connected!')
+
+        def on_message(self, message):
+            self.write_message(message)
+
+正如你在我们的EchoHandler实现中所看到的，open方法只是使用WebSocketHandler基类提供的write_message方法向客户端发送字符串"connected!"。每次处理程序从客户端接收到一个新的消息时调用on_message方法，我们的实现中将客户端提供的消息原样返回给客户端。这就是全部！让我们通过一个完整的例子看看实现这个协议是如何简单的吧。
