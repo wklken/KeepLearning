@@ -1,6 +1,9 @@
 
 
-参考书籍 Go Web编程
+参考书籍 
+
+    Go Web编程
+    Go by Example http://everyx.github.io/gobyexample/
 
 
 待处理:

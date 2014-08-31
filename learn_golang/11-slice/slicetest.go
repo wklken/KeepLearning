@@ -31,6 +31,7 @@ func main() {
 	fmt.Println("aslice", aslice)
 
 	// make创建
+	// slice 的类型仅有它所包含的元素决定（不像数组中还需要元素的个数）。要创建一个长度非零的空slice，需要使用内建的方法 make
 	myslice1 := make([]int, 5)
 	myslice2 := make([]int, 5, 10)
 
@@ -38,7 +39,6 @@ func main() {
 	fmt.Println("myslice2", myslice2, len(myslice2), cap(myslice2))
 
 	// 2. 通过一个array声明, 指向实际的array
-
 	var ar = [10]byte{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'}
 	fmt.Println("ar", ar)
 
@@ -53,7 +53,6 @@ func main() {
 
 	// 3. 从slice中获取slice, 要绘制指向array的图, 才能知道, len, cap的真正大小
 	// len() 获取长度, cap获取最大容量
-
 	var aSlice, bSlice []byte
 	aSlice = ar[3:7] // d e f g,   len=4, cap=7   (10-3),后面总共能放7个
 
@@ -71,6 +70,8 @@ func main() {
 	fmt.Println("ar", ar)
 
 	// 5. append方法, 向slice里面追加一个或多个元素, 然后返回一个和slcie一样类型的slice
+	// 返回一个包含了一个或者多个新值的 slice。注意我们接受返回由 append返回的新的 slice 值。
+
 	// 5.1 cap-len>0 时, append会改变slice所引用数组的内容, 从而影响到同一个数组的其他slice [特别注意]  所有都变!!!! 坑
 	fmt.Println("do append 1")
 	cSlice := append(bSlice, '1', '2')
@@ -95,5 +96,13 @@ func main() {
 	dest_slice := make([]byte, 2)
 	copy_count := copy(dest_slice, bSlice)
 	fmt.Println("source, dest, copy_count", bSlice, dest_slice, copy_count)
+
+	// 遍历
+	nums := []int{2, 3, 4}
+	for i, num := range nums {
+		if num == 3 {
+			fmt.Println("index:", i)
+		}
+	}
 
 }

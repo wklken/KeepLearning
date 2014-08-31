@@ -13,6 +13,7 @@ import (
 func main() {
 
 	// 几种形式
+	//基本的 switch
 	a := 1
 	switch a {
 	case 0:
@@ -20,12 +21,14 @@ func main() {
 	case 1:
 		fmt.Println("1")
 	case 2, 3, 4:
+		//在一个 case 语句中，你可以使用逗号来分隔多个表达式
 		fmt.Println("2, 3, 4")
 	default:
 		fmt.Println("default")
 	}
 
 	// another
+	// 不带表达式的 switch 是实现 if/else 逻辑的另一种方式
 	//switch a := 1; {
 	switch {
 	case a > 0:

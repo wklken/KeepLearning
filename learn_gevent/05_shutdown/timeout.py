@@ -16,4 +16,6 @@ try:
     gevent.spawn(wait).join()
 except Timeout:
     print('Could not complete')
+finally:
+    timeout.cancel()
 

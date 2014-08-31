@@ -38,6 +38,7 @@ func area_of_circle(c Circle) float64 {
 	return c.radius * c.radius * math.Pi
 }
 
+// Go 支持给结构体类型定义方法
 // methods 虽然method名字一样,但是receiver不同,则method不同.   method里面可以访问接收者的字段.
 func (r Rectangle) area() float64 {
 	return r.width * r.height
@@ -46,6 +47,8 @@ func (r Rectangle) area() float64 {
 func (c Circle) area() float64 {
 	return c.radius * c.radius * math.Pi
 }
+
+// ====================================
 
 // 2.指针
 type Color byte
@@ -58,6 +61,8 @@ type Box struct {
 func (b *Box) SetColor(c Color) {
 	b.color = c
 }
+
+// ==================================
 
 // 3. method继承
 

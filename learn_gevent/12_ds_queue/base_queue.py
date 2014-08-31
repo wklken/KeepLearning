@@ -23,6 +23,7 @@ def worker(n):
 
 def boss():
     for i in xrange(1,25):
+        print "Boss put ", i
         tasks.put_nowait(i)
 
 gevent.spawn(boss).join()

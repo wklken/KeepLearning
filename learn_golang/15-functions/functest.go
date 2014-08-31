@@ -39,6 +39,7 @@ import (
 	"fmt"
 )
 
+// 一般函数
 func max(a, b int) int {
 	if a > b {
 		return a
@@ -46,7 +47,7 @@ func max(a, b int) int {
 	return b
 }
 
-//多个返回值
+// 多个返回值
 func SumAndProduct(A, B int) (int, int) {
 	return A + B, A * B
 }
@@ -135,8 +136,11 @@ func main() {
 	fmt.Println("x", x)
 	fmt.Println("x1", x1)
 
+	// 调用传指针的地方
 	add2(&x)
 	fmt.Println("after & * add operation", x)
+
+	//add2(x) 不允许
 
 	//------------------
 

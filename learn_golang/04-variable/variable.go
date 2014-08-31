@@ -10,7 +10,7 @@ func main() {
 
 	//定义一个变量 var variableName type
 	var a int
-	fmt.Println("a", "=", a)
+	fmt.Println("a", "=", a) //未初始化, 默认值0
 	//定义并初始化 var variableName type = value
 	var a1 int = 1
 	fmt.Println("a", "=", a1)
@@ -28,8 +28,9 @@ func main() {
 
 	// 再简化, 简短声明:=   出现在:=左侧的变量不应该是已被声明过的, 否则会导致编译错误
 	// 限制, 只能用在函数内部, 在函数外部无法编译通过, 外部变量一定有var
+	a2 := 1
 	b3, c3, d3 := 7, 8, 9
-	fmt.Println("b3, c3, d3", "=", b3, c3, d3)
+	fmt.Println("a2, b3, c3, d3", "=", a2, b3, c3, d3)
 
 	// 丢弃
 	_, b4 := 10, 11

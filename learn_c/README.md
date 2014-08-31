@@ -2,6 +2,19 @@
 
 参考书籍: <<C Primer Plus>>
 
+目录
+
+README.md
+
+helloworld
+datatype
+strings - 欠: 常用各种声明方式, 字符串操作函数
+
+array
+pointer
+
+examples
+
 代码只敲了一些感觉有用的, 上面的大部分都很基础. 有些地方后面再回来重写
 
     hello world
@@ -30,3 +43,4 @@
 
 
 
+ctypes.h

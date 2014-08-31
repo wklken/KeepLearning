@@ -54,6 +54,9 @@ func main() {
 	p2 := person{age: 23, name: "Luna"}
 	fmt.Println("p2 name", p2.name)
 
+	sp := &p2
+	fmt.Println("sp name", sp.name) //可以直接取值, 不需要*sp
+
 	rp, ra := Older(p1, p2)
 	fmt.Println("the older one", rp, "age diff:", ra)
 

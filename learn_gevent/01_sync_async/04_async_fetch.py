@@ -8,6 +8,7 @@
 import gevent.monkey
 gevent.monkey.patch_socket()
 
+import time
 import gevent
 import urllib2
 import simplejson as json
@@ -21,6 +22,9 @@ def fetch(pid):
     print('Process %s: %s' % (pid, datetime))
     return json_result['datetime']
 
+    #response = urllib2.urlopen('http://www.baidu.com')
+    #return len(response.read())
+
 def synchronous():
     for i in range(1,10):
         fetch(i)
@@ -32,8 +36,12 @@ def asynchronous():
     gevent.joinall(threads)
 
 print('Synchronous:')
+t1 = time.time()
 synchronous()
+print time.time() - t1
 
 print('Asynchronous:')
+t2 = time.time()
 asynchronous()
+print time.time() - t2
 

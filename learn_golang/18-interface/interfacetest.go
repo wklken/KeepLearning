@@ -9,6 +9,7 @@ import (
 interface让面向对象/内容组织的实现变得非常方便
 
 interface是一组method的集合. 我们通过interface来定义对象的一组行为
+(接口 是方法特征的命名集合。)
 
 在golang中, 一个类只要实现了接口要求的所有函数, 我们就说这个类实现了这个接口
 
@@ -42,6 +43,7 @@ func (h Human) Sing(lyrics string) {
 	fmt.Printf("La la, la la la...%s\n", lyrics)
 }
 
+// 接口定义
 type Men interface {
 	SayHi()
 	Sing(lyrics string)
@@ -64,8 +66,9 @@ func main() {
 	i = mike
 	i.SayHi()
 
-	// interface类型检查 Comma-ok断言
+	// 接口继承 - 怎么处理的?
 
+	// interface类型检查 Comma-ok断言
 	var a interface{} = "abc"
 	_, ok := a.(int)
 	if ok {

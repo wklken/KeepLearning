@@ -15,15 +15,19 @@ array,数组
 
 func main() {
 	// 定义 var arr [n]type,  n>=0
+	// 元素的类型和长度都是数组类型的一部分。数组默认是零值的，对于 int 数组来说就是 0。
 	var arr [10]int
 	arr[0] = 42
 	arr[1] = 13
+
+	fmt.Println("len:", len(arr))
 
 	for i, v := range arr {
 		fmt.Println(i, v)
 	}
 
 	// := 声明
+	// 使用这个语法来在一行内初始化一个数组
 	a := [3]int{1, 2, 3}
 	b := [10]int{1, 2, 3}
 
@@ -35,6 +39,7 @@ func main() {
 	// 二维数组
 	doubleArr := [2][4]int{[4]int{1, 2, 3, 4}, [4]int{5, 6, 7, 8}}
 	easyArr := [2][4]int{{1, 2, 3, 4}, {5, 6, 7, 8}}
+	// 注意在使用 fmt.Println 来打印的时候，数组使用[v1 v2 v3 ...] 的格式显示
 	fmt.Println(doubleArr)
 	fmt.Println(easyArr)
 
