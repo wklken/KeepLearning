@@ -13,3 +13,11 @@ learn_tornado
 ## Golang
 
 learn_golang
+
+## Ruby
+
+learn_ruby
+
+## C
+
+learn_c
